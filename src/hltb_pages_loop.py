@@ -11,21 +11,20 @@ class ScrapperLoop():
         """
         Obtain data for each game in howlongtobeat
         """
-        req = requests.post(URL_LOOP + str(38019))
-        if req.url != "https://howlongtobeat.com/404.php":
-            sc = Scrapper()
-            dataGame = sc.bsScrapper(req.text)
 
-        """for i in range(1, 3):
+        for i in range(1, 90000):
 
             req = requests.post(URL_LOOP + str(i))
             if req.url != "https://howlongtobeat.com/404.php":
                 sc = Scrapper()
+                print(i)
+                print(req.url)
+                print("-"*40)
                 dataGame = sc.bsScrapper(req.text)
                 self.__class__.dataDict[i] = dataGame
 
-            sleep(1)
-        self.convertData()"""
+            #sleep(1)
+        self.convertData()
 
     def convertData(self):
         """

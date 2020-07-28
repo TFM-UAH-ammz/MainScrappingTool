@@ -6,7 +6,8 @@ class Scrapper(object):
         soup = BeautifulSoup(htmltext, "lxml")
         data = {}
         #----------------------basic Data
-        data["name"] = soup.find("div", {"class": "profile_header shadow_text"}).get_text(strip=True)
+        if self.check_data(soup.find("div", {"class": "profile_header shadow_text"})):
+            data["name"] = soup.find("div", {"class": "profile_header shadow_text"}).get_text(strip=True)
 
         if self.check_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find("p")):
             data["description"] = soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find("p").get_text(strip=True)
@@ -27,19 +28,20 @@ class Scrapper(object):
         except Exception as e:
             pass
         #---------------------- Aditional content
+        try:
+            dummyArray = []
+            if self.check_data(soup.find("div", {"class": "in scrollable back_primary shadow_box"})):
+                item = soup.find("div", {"class": "in scrollable back_primary shadow_box"}).find("td").get_text(strip=True)
+                for tbody in soup.find("div", {"class": "in scrollable back_primary shadow_box"}).find_all("tbody"):
+                    td = tbody.find_all("td")
+                    tempArray = []
+                    for element in td[1:]:
+                        tempArray.append(element.get_text(strip=True))
+                    dummyArray.append({"name":td[0].get_text(strip=True), "data":tempArray})
 
-        dummyArray = []
-        if self.check_data(soup.find("div", {"class": "in scrollable back_primary shadow_box"})):
-            item = soup.find("div", {"class": "in scrollable back_primary shadow_box"}).find("td").get_text(strip=True)
-            for tbody in soup.find("div", {"class": "in scrollable back_primary shadow_box"}).find_all("tbody"):
-                td = tbody.find_all("td")
-                tempArray = []
-                for element in td[1:]:
-                    tempArray.append(element.get_text(strip=True))
-                dummyArray.append({"name":td[0].get_text(strip=True), "data":tempArray})
-
-            data[item] = dummyArray
-
+                data[item] = dummyArray
+        except Exception as e:
+            pass
             #----------------------------Single player
 
         try:
@@ -75,21 +77,21 @@ class Scrapper(object):
         if self.check_data(soup.find("h5", {"style":"margin-top: -86px;"})):
             name, info = self.get_game_points(soup.find("h5", {"style":"margin-top: -86px;"}).get_text(strip=True))
             data[name] = float(info)
-            print(data["Retirement"])
 
         #---------------- Platform
-
-        dummDict = {}
-        if self.check_data(soup.find("div", {"class": "in shadow_box back_primary"})):
-            item = soup.find("div", {"class": "in shadow_box back_primary"}).find("td").get_text(strip=True)
-            for tbody in soup.find("div", {"class": "in shadow_box back_primary"}).find_all("tr")[1:]:
-                td = tbody.find_all("td")
-                tempArray = []
-                for element in td[1:]:
-                    tempArray.append(element.get_text(strip=True))
-                    dummDict[td[0].get_text(strip=True)] = tempArray
-            data[item] = dummDict
-
+        try:
+            dummDict = {}
+            if self.check_data(soup.find("div", {"class": "in shadow_box back_primary"})):
+                item = soup.find("div", {"class": "in shadow_box back_primary"}).find("td").get_text(strip=True)
+                for tbody in soup.find("div", {"class": "in shadow_box back_primary"}).find_all("tr")[1:]:
+                    td = tbody.find_all("td")
+                    tempArray = []
+                    for element in td[1:]:
+                        tempArray.append(element.get_text(strip=True))
+                        dummDict[td[0].get_text(strip=True)] = tempArray
+                data[item] = dummDict
+        except Exception as e:
+            pass
         return data
 
     def get_game_points(self, str_element):
