@@ -3,6 +3,9 @@ import re
 
 class Scrapper(object):
     def bsScrapper(self, htmltext):
+        """
+        Given an html text from the web HowlongToBeat it will extract the main data that are of interest.
+        """
         soup = BeautifulSoup(htmltext, "lxml")
         data = {}
         #----------------------basic Data
@@ -14,16 +17,16 @@ class Scrapper(object):
 
         try:
             name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[0].get_text(strip=True))
-            data[name] = info
+            data[name] = self.check_if_split(name,info)
 
             name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[1].get_text(strip=True))
-            data[name] = info
+            data[name] = self.check_if_split(name,info)
 
             name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[2].get_text(strip=True))
-            data[name] = info
+            data[name] = self.check_if_split(name,info)
 
             name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[3].get_text(strip=True))
-            data[name] = info
+            data[name] = self.check_if_split(name,info)
 
         except Exception as e:
             pass
@@ -42,11 +45,11 @@ class Scrapper(object):
                 data[item] = dummyArray
         except Exception as e:
             pass
-            #----------------------------Single player
-
+            
+        #----------------------------Single player
         try:
             dummDict = {}
-            item = soup.find("div", {"class": "in scrollable shadow_box back_primary"})[0].find("td").get_text(strip=True)
+            item = soup.find_all("div", {"class": "in scrollable shadow_box back_primary"})[0].find("td").get_text(strip=True)
             for tbody in soup.find_all("div", {"class": "in scrollable shadow_box back_primary"})[0].find_all("tbody"):
                 td = tbody.find_all("td")
                 tempArray = []
@@ -54,11 +57,14 @@ class Scrapper(object):
                     tempArray.append(element.get_text(strip=True))
                 dummDict[td[0].get_text(strip=True)] = tempArray
             data[item] = dummDict
+            #data["singlePlayer"] = dummDict
+        except Exception as e:
+            pass
 
-            #----------------------------SpeedRun
-
+        #----------------------------SpeedRun
+        try:
             dummDict = {}
-            item = soup.find("div", {"class": "in scrollable shadow_box back_primary"})[1].find("td").get_text(strip=True)
+            item = soup.find_all("div", {"class": "in scrollable shadow_box back_primary"})[1].find("td").get_text(strip=True)
             for tbody in soup.find_all("div", {"class": "in scrollable shadow_box back_primary"})[1].find_all("tbody"):
                 td = tbody.find_all("td")
                 tempArray = []
@@ -66,6 +72,7 @@ class Scrapper(object):
                     tempArray.append(element.get_text(strip=True))
                 dummDict[td[0].get_text(strip=True)] = tempArray
             data[item] = dummDict
+            #data["speedRun"] = dummDict
         except Exception as e:
             pass
         #----------------------- Rating
@@ -105,8 +112,16 @@ class Scrapper(object):
         return name, info
 
     def check_data(self, object_data):
-
         if object_data is not None:
             return True
         else:
             return False
+
+    def check_if_split(self, name, string):
+        """
+        Checks if the variables from the basic data set are in the set of spliteable data
+        """
+        if name in ["Playable On","Genres"]:
+            return list(map(str.strip, string.split(",")))
+        else:
+            return string
