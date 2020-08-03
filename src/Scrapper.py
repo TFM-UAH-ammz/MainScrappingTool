@@ -7,6 +7,7 @@ class Scrapper(object):
         Given an html text from the web HowlongToBeat it will extract the main data that are of interest.
         """
         soup = BeautifulSoup(htmltext, "lxml")
+        dict_keys= {'name':None, 'description': None, 'Developer':None, 'Publisher':None, 'Playable On':None, 'Genres':None, 'NA':None, 'EU':None, 'JP':None, 'Additional Content':None, 'Single-Player': None, 'Speedrun':None, 'Retirement':           None, 'Platform':None}
         data = {}
         #----------------------basic Data
         if self.check_data(soup.find("div", {"class": "profile_header shadow_text"})):
@@ -28,8 +29,21 @@ class Scrapper(object):
             name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[3].get_text(strip=True))
             data[name] = self.check_if_split(name,info)
 
+            name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[4].get_text(strip=True))
+            data[name] = self.check_if_split(name,info)
+
+            name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[5].get_text(strip=True))
+            data[name] = self.check_if_split(name,info)
+
+            name, info = self.get_game_data(soup.find_all("div",{"class": "in back_primary shadow_box"})[2].find_all("div", {"class":"profile_info"})[6].get_text(strip=True))
+            data[name] = self.check_if_split(name,info)
+
+
+
         except Exception as e:
             pass
+
+        data = self.delete_extra_tags(data)
         #---------------------- Aditional content
         try:
             dummyArray = []
@@ -45,7 +59,7 @@ class Scrapper(object):
                 data[item] = dummyArray
         except Exception as e:
             pass
-            
+
         #----------------------------Single player
         try:
             dummDict = {}
@@ -99,7 +113,10 @@ class Scrapper(object):
                 data[item] = dummDict
         except Exception as e:
             pass
-        return data
+
+
+        dict_keys.update(data)
+        return dict_keys
 
     def get_game_points(self, str_element):
         name = re.sub(r"^.*%\s?", "", str_element)
@@ -125,3 +142,10 @@ class Scrapper(object):
             return list(map(str.strip, string.split(",")))
         else:
             return string
+
+    def delete_extra_tags(self, data):
+        """
+        Delete JP, EU ,NA and Updated tag
+        """
+        data.pop("Updated", None)
+        return data
