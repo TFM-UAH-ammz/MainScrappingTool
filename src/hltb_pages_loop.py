@@ -23,6 +23,9 @@ class ScrapperLoop():
                 print("-"*40)
                 dataGame = sc.bsScrapper(req.text)
                 self.__class__.dataDict[i] = dataGame
+            else
+                print("Game " + i + " 404")
+                print("-"*40)
 
             #sleep(1)
         self.convertData(fileName)

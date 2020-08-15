@@ -113,6 +113,16 @@ class Scrapper(object):
                 data[item] = dummDict
         except Exception as e:
             pass
+        try:
+            dummDict = {}
+            names = soup.find("div", {"class": "global_padding back_form"}).find_all("div", attrs={'style':'height: 16px;float:left;'})
+            n = soup.find("div", {"class": "global_padding back_form"}).find_all("strong")[:-2]
+            if len(names) == len(n):
+                for i in range(len(names)):
+                    dummDict[names[i].get_text(strip=True)] = n[i].get_text(strip=True)
+            data["Platform N"] = dummDict
+        except Exception as e:
+            pass
 
 
         dict_keys.update(data)

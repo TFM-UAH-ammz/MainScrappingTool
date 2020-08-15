@@ -54,5 +54,6 @@ class TestGeneratedJson(unittest.TestCase):
                                                 "Nintendo Switch": ["3.9K","50h 21m","98h 01m","187h 38m","7h 08m","455h"],
                                                 "Wii U":["706","47h 14m","93h 29m","183h 43m","11h 35m","400h"]
                                                 })
+        self.assertEqual(self.__class__.scrappedData["Platform N"],{'Emulated': '110', 'Nintendo Switch': '5.9K', 'Wii U': '1.1K'})
 if __name__ == '__main__':
     unittest.main()
