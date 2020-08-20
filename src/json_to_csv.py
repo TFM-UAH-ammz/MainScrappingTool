@@ -16,6 +16,18 @@ with open('Scrapped_Data_ZYL.json') as json_file:
     data4 = json.load(json_file)
     data.update(data4)
 
+#Clean json file
+temp_data = {}
+for key,game in data.items():
+    if "Genre" in game:
+        game['Genres'] = game.pop('Genre')
+    if "Platform" in game:
+        game['Publishers'] = game.pop('Publisher')
+    if "Developer" in game:
+        game['Developers'] = game.pop('Developer')
+    temp_data[key] = game
+data = temp_data
+del(temp_data)
 data_file = open('data_file.csv', 'w')
 
 #Create the csv writer object
@@ -24,7 +36,7 @@ csv_writer = csv.writer(data_file)
 #Write header data first
 #The first minimun value is 22501 but, it can be change to 0 because
 #all games will have the same headers
-header = data["10192"].keys()
+header = data["22654"].keys()
 csv_writer.writerow(header)
 
 for game_id in data:

@@ -122,6 +122,7 @@ class Scrapper(object):
                     dummDict[names[i].get_text(strip=True)] = n[i].get_text(strip=True)
             data["Platform N"] = dummDict
         except Exception as e:
+            data["Platform N"] = {}
             pass
 
 
