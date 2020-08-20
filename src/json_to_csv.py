@@ -19,12 +19,12 @@ with open('Scrapped_Data_ZYL.json') as json_file:
 data_file = open('data_file.csv', 'w')
 
 #Create the csv writer object
-csv_writter = csv.writer(data_file)
+csv_writer = csv.writer(data_file)
 
 #Write header data first
 #The first minimun value is 22501 but, it can be change to 0 because
 #all games will have the same headers
-header = data["22501"].keys()
+header = data["10192"].keys()
 csv_writer.writerow(header)
 
 for game_id in data:
